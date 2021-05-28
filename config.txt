@@ -1,0 +1,6 @@
+[telegram]
+bot_token = BotToken
+bot_chatID = ChatID
+
+[webhook]
+port = 5000
