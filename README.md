@@ -14,11 +14,6 @@ ngrok - webserver for receiving webhook calls from TradingView (https://ngrok.co
 
 These can be substituted for your preferred services, with some modifications to the api calls.  
 
-## Configuration files:
-
-config.txt - telegram and webserver port config \
-state.cfg - can be used to hold state information, such as the multi-timeframe trends (not currently implemented in this version).  It also checks wheher there is already a trade running of the same security (see example file).
-
 ## How it all works:
 
 This bot is intended for those who have preconfigured trading strategies/algorithms created on software platforms that supports webhook calls, i.e TradingView.  Here is the order flow:
@@ -28,6 +23,12 @@ This bot is intended for those who have preconfigured trading strategies/algorit
 3. Include the listening webhook url to forward the message to your webserver
 4. Webserver receives the message and checks states and config
 5. Orders are sent to Binance (order logic is in order.py) 
+
+
+## Configuration files:
+
+config.txt - telegram and webserver port config \
+state.cfg - can be used to hold state information, such as the multi-timeframe trends (not currently implemented in this version).  It also checks wheher there is already a trade running of the same security (see example file).
 
 ## Troubleshooting:
 
