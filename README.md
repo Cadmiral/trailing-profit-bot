@@ -35,3 +35,4 @@ This bot is intended for those who have preconfigured trading strategies/algorit
 - A logs/ subfolder will need to be created for logs
 - Binance api key/secret reads from your system profile (~/.profile for most *nix distro)
 - Use this link for a guide on how to set up your Telegram notification bot: https://core.telegram.org/bots
+- Modify util.py to use with your telegram bot
