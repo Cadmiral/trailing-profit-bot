@@ -1,0 +1,6 @@
+[telegram]
+bot_token = 111111187:AeIDFLJSKDFJMVOIJSDLKF-IDF
+bot_chatID = 87746382
+
+[webhook]
+port = 5000
