@@ -336,7 +336,8 @@ class OrderMgr:
                 #Create Stop Loss Order
                 if iteration == 1:
                     stop_loss = stop_loss - atr
-                stop_loss = price - (atr * atr_multiplier * iteration)
+                else:
+                    stop_loss = price - (atr * atr_multiplier * iteration)
                 stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration)
 
                 #Create Take Profit Order
@@ -421,7 +422,8 @@ class OrderMgr:
                 #Create Stop Loss Order
                 if iteration == 1:
                     stop_loss = stop_loss + atr
-                stop_loss = price + (atr * atr_multiplier * iteration)
+                else:
+                    stop_loss = price + (atr * atr_multiplier * iteration)
                 stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration)
 
                 #Create Take Profit Order
