@@ -349,7 +349,7 @@ class OrderMgr:
 
                 #Create Take Profit Order
  
-                # take_profit = take_profit - (atr * atr_multiplier)
+                take_profit = take_profit - (atr * atr_multiplier)
                 profitPrice = float(take_profit_order["avgPrice"])
                 profit = (price - profitPrice) * float(take_profit_quantity)
                 take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration)
@@ -435,7 +435,7 @@ class OrderMgr:
                 stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration, positionAmt)
 
                 #Create Take Profit Order
-                # take_profit = take_profit + (atr * atr_multiplier)
+                take_profit = take_profit + (atr * atr_multiplier)
                 profitPrice = float(take_profit_order["avgPrice"])
                 profit = (profitPrice - price) * float(take_profit_quantity)
                 take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration)
