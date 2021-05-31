@@ -332,7 +332,7 @@ class OrderMgr:
                 openPosition = self.client.futures_position_information(symbol=symbol)
                 for p in openPosition:
                     if p["symbol"] == symbol:
-                        positionAmt = float(p["positionAmt"])
+                        positionAmt = abs(float(p["positionAmt"]))
                 quantityVal = abs(positionAmt * quantity_multiplier)
                 if symbol not in set(["BTCUSDT", "ETHUSDT"]):
                     quantityVal = int(quantityVal)
@@ -409,7 +409,7 @@ class OrderMgr:
             openPosition = self.client.futures_position_information(symbol=symbol)
             for p in openPosition:
                 if p["symbol"] == symbol:
-                    positionAmt = float(p["positionAmt"])
+                    positionAmt = abs(float(p["positionAmt"]))
                     if positionAmt == 0.0:
                         stop_loss_order_status = "FILLED"                    
 
