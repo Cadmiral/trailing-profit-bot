@@ -292,8 +292,8 @@ class OrderMgr:
         quantity_multiplier = 0.7
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
-        avgPrice = float(order["avgPrice"])
-        atr = abs(avgPrice - take_profit)
+        price = float(order["avgPrice"])
+        atr = abs(price - take_profit)
         quantityVal = abs(order_quantity * quantity_multiplier)        
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
             quantityVal = int(quantityVal)
@@ -344,7 +344,7 @@ class OrderMgr:
                 if iteration == 1:
                     stop_loss = stop_loss - atr
                 else:
-                    stop_loss = avgPrice - (atr * atr_multiplier * iteration)
+                    stop_loss = price - (atr * atr_multiplier * iteration)
                 stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration, positionAmt)
 
                 #Create Take Profit Order
@@ -378,8 +378,8 @@ class OrderMgr:
         quantity_multiplier = 0.7
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
-        avgPrice = float(order["avgPrice"])
-        atr = abs(avgPrice - take_profit)
+        price = float(order["avgPrice"])
+        atr = abs(price - take_profit)
         quantityVal = abs(order_quantity * quantity_multiplier)        
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
             quantityVal = int(quantityVal)
@@ -431,7 +431,7 @@ class OrderMgr:
                 if iteration == 1:
                     stop_loss = stop_loss + atr
                 else:
-                    stop_loss = avgPrice + (atr * atr_multiplier * iteration)
+                    stop_loss = price + (atr * atr_multiplier * iteration)
                 stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration, positionAmt)
 
                 #Create Take Profit Order
