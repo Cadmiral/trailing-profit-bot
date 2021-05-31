@@ -103,7 +103,7 @@ class OrderMgr:
                 self.log.exception("BinanceAPIException: %s", e)
                 message = ("Exception occurred: Closing out all Positions", symbol)
                 self.log.info(message)
-                self.sendTelegram(message)
+                util.sendTelegram(message)
                 order = self.client.futures_create_order(
                         symbol=symbol, side=side, type='MARKET',
                         quantity=positionAmt, reduceOnly='true')
@@ -111,7 +111,7 @@ class OrderMgr:
                 self.log.exception("Unexpected Error: %s", e)
                 message = ("Exception occurred: Closing out all Positions", symbol)
                 self.log.info(message)
-                self.sendTelegram(message)
+                util.sendTelegram(message)
                 order = self.client.futures_create_order(
                         symbol=symbol, side=side, type='MARKET',
                         quantity=positionAmt, reduceOnly='true')                
@@ -249,9 +249,9 @@ class OrderMgr:
             self.client.futures_cancel_all_open_orders(symbol=symbol)
 
         if side == "BUY":
-            self.send_long_orders(order, takeProfit, stopLoss, price, balance)
+            self.send_long_orders(order, takeProfit, stopLoss, balance)
         else:
-            self.send_short_orders(order, takeProfit, stopLoss, price, balance)
+            self.send_short_orders(order, takeProfit, stopLoss, balance)
 
         return True
 
@@ -261,7 +261,7 @@ class OrderMgr:
 
         message = ("Moving Stop Loss ({0}), symbol={1}, new stop_price={2}".format(iteration, symbol, stop_loss))
         self.log.info(message)
-        self.sendTelegram(message)
+        util.sendTelegram(message)
 
         return stop_loss_order
 
@@ -272,14 +272,14 @@ class OrderMgr:
 
         message = ("Take Profit ({0}) Reached, symbol={1}, new take_profit={2}".format(iteration, symbol, take_profit))
         self.log.info(message)
-        self.sendTelegram(message)
+        util.sendTelegram(message)
 
         message = "TP{2} Profit: ${0:.2f}, symbol: {1}".format(profit, symbol, iteration)
         self.log.info(message)
         util.sendTelegram(message)
         return take_profit_order
 
-    def send_short_orders(self, order, take_profit, stop_loss, price, open_balance):
+    def send_short_orders(self, order, take_profit, stop_loss, open_balance):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
@@ -365,7 +365,7 @@ class OrderMgr:
         self.log.info(message)
         util.sendTelegram(message)
 
-    def send_long_orders(self, order, take_profit, stop_loss, price, open_balance):
+    def send_long_orders(self, order, take_profit, stop_loss, open_balance):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
