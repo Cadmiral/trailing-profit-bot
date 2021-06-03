@@ -69,7 +69,8 @@ class OrderMgr:
         return balance
 
     def create_order(self, orderType=None, symbol=None, side=None,
-                     quantity=None, price=None, timeout=0, sleep=1, stopPrice=None, positionAmt=None):
+                     quantity=None, price=None, timeout=0, sleep=1, 
+                     stopPrice=None, positionAmt=None):
         self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s",
                       orderType, side, symbol, quantity, price, positionAmt)
         order = None
@@ -101,7 +102,8 @@ class OrderMgr:
                 self.log.debug("futures_create_order: %s", pprint.pformat(order))
             except BinanceAPIException as e:
                 self.log.exception("BinanceAPIException: %s", e)
-                order = self.client.futures_create_order(symbol=symbol, side=side, type='MARKET', quantity=positionAmt, reduceOnly='true')
+                order = self.client.futures_create_order(symbol=symbol, side=side, 
+                    type='MARKET', quantity=positionAmt, reduceOnly='true')
 
                 message = "Exception occurred: Closing out all Positions", symbol
                 self.log.info(message)
@@ -109,7 +111,8 @@ class OrderMgr:
             except Exception as e:
                 self.log.exception("Unexpected Error: %s", e)
                 message = "Exception occurred: Closing out all Positions", symbol
-                order = self.client.futures_create_order(symbol=symbol, side=side, type='MARKET', quantity=positionAmt, reduceOnly='true')
+                order = self.client.futures_create_order(symbol=symbol, side=side, 
+                    type='MARKET', quantity=positionAmt, reduceOnly='true')
                 
                 self.log.info(message)
                 util.sendTelegram(message)
@@ -215,8 +218,11 @@ class OrderMgr:
             return False
 
         # Send telegram
-        message = ("Create New Order for: {4}\nSide: {5}\nPercentage: {6}\nPrice: ${0:,.2f}\nQuantity: {3:.2f}\nTake Profit: ${1:,.2f}\nStop Loss: ${2:,.2f}\nOpening Balance: ${8:,.2f}\nMax Loss: ${7:,.2f}".format(
-                       price, takeProfit, stopLoss, quantity, symbol, side, percentage, maxStopLossAmt, balance))
+        message = ("Create New Order for: {4}\nSide: {5}\nPercentage: {6}\nPrice: ${0:,.2f}\n" +
+                    "Quantity: {3:.2f}\nTake Profit: ${1:,.2f}\nStop Loss: ${2:,.2f}\n" +
+                    "Opening Balance: ${8:,.2f}\nMax Loss: ${7:,.2f}".format(
+                    price, takeProfit, stopLoss, quantity, symbol, side, percentage, maxStopLossAmt, balance))
+
         util.sendTelegram(message)
 
         # Get order by ID
@@ -254,28 +260,35 @@ class OrderMgr:
 
         return True
 
-    def create_stop_loss_trailing_order(self, symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration, positionAmt):
-        message = "Moving Stop Loss ({0}), symbol={1}, new stop_price={2:,.2f}, positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt)
+    def create_stop_loss_trailing_order(self, symbol, side, stop_loss_orderType, 
+        stop_loss, order_quantity, iteration, positionAmt):
+
+        message = ("Moving Stop Loss ({0}), symbol={1}\nnew stop_price={2:,.2f}, " +
+                   "positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt))
         self.log.info(message)
-        util.sendTelegram("New SL={0}, symbol={1}".format(stop_loss, symbol))
+        util.sendTelegram(message)
 
         stop_loss_order = self.create_order(orderType=stop_loss_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(stop_loss), positionAmt=positionAmt)
-
+            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(stop_loss), 
+            positionAmt=positionAmt)
 
         return stop_loss_order
 
-    def create_take_profit_trailing_order(self, take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration, positionAmt):
+    def create_take_profit_trailing_order(self, take_profit_orderType, symbol, side, 
+        order_quantity, take_profit, profit, iteration, positionAmt):
+
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), positionAmt=positionAmt)
+            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), 
+            positionAmt=positionAmt)
 
         message = "TP{2} Profit: ${0:.2f}, symbol: {1}".format(profit, symbol, iteration)
         self.log.info(message)
         util.sendTelegram(message)
 
-        message = "Take Profit ({0}) Reached, symbol={1}, new take_profit={2:,.2f}, positionAmt={3}".format(iteration, symbol, take_profit, positionAmt)
+        message = ("Take Profit ({0}) Reached, symbol={1}\nnew take_profit={2:,.2f}, " + 
+                   "positionAmt={3}".format(iteration, symbol, take_profit, positionAmt))
         self.log.info(message)
-        util.sendTelegram("New TP={0}, symbol={1}".format(take_profit, symbol))
+        util.sendTelegram(message)
 
         return take_profit_order
 
@@ -312,7 +325,8 @@ class OrderMgr:
             stopPrice="{:.3f}".format(stop_loss), positionAmt=positionAmt)
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), positionAmt=positionAmt)
+            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), 
+            positionAmt=positionAmt)
 
         self.log.debug("Take profit order: %s", pprint.pformat(take_profit_order))
         self.log.debug("Stop loss order: %s", pprint.pformat(stop_loss_order))
@@ -354,14 +368,16 @@ class OrderMgr:
                     stop_loss = stop_loss - atr
                 else:
                     stop_loss = price - (atr * atr_multiplier * iteration)
-                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration, positionAmt)
+                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
+                                  stop_loss, order_quantity, iteration, positionAmt)
 
                 #Create Take Profit Order
  
                 take_profit = take_profit - (atr * atr_multiplier)
                 profitPrice = float(take_profit_order["avgPrice"])
                 profit = (price - profitPrice) * float(take_profit_quantity)
-                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration, positionAmt)
+                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, 
+                                    side, order_quantity, take_profit, profit, iteration, positionAmt)
                 iteration = iteration + 1
             
             time.sleep(1)
@@ -449,13 +465,15 @@ class OrderMgr:
                     stop_loss = stop_loss + atr
                 else:
                     stop_loss = price + (atr * atr_multiplier * iteration)
-                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration, positionAmt)
+                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
+                                  stop_loss, order_quantity, iteration, positionAmt)
 
                 #Create Take Profit Order
                 take_profit = take_profit + (atr * atr_multiplier)
                 profitPrice = float(take_profit_order["avgPrice"])
                 profit = (profitPrice - price) * float(take_profit_quantity)
-                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration, positionAmt)
+                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, 
+                                    side, order_quantity, take_profit, profit, iteration, positionAmt)
                 iteration = iteration + 1
             
             time.sleep(1)
