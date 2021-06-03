@@ -272,7 +272,7 @@ class OrderMgr:
 
         message = "Take Profit ({0}) Reached, symbol={1}, new take_profit={2:,.2f}".format(iteration, symbol, take_profit)
         self.log.info(message)
-        util.sendTelegram(message)
+        util.sendTelegram("HELLO!!!")
 
         message = "TP{2} Profit: ${0:.2f}, symbol: {1}".format(profit, symbol, iteration)
         self.log.info(message)
