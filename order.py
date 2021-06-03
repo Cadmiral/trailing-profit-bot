@@ -291,7 +291,7 @@ class OrderMgr:
         side = "BUY"
         symbol = order["symbol"]
         if strategy == "highVol":
-            quantity_multiplier = 0.9
+            quantity_multiplier = 1
         else:
             quantity_multiplier = 0.5
         stop_loss_muliplier = 0.5
