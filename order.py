@@ -272,7 +272,7 @@ class OrderMgr:
         util.sendTelegram("HELLO!!!")
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit))
+            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), positionAmt=positionAmt)
 
         message = "TP{2} Profit: ${0:.2f}, symbol: {1}".format(profit, symbol, iteration)
         self.log.info(message)
