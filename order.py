@@ -69,7 +69,7 @@ class OrderMgr:
         return balance
 
     def create_order(self, orderType=None, symbol=None, side=None,
-                     quantity=None, price=None, timeout=0, sleep=1, stopPrice=None, positionAmt=None):
+                     quantity=None, price=None, timeout=0, sleep=1, stopPrice=None, positionAmt):
         self.log.info("Create %s %s order for %s: quantity=%s, price=%s",
                       orderType, side, symbol, quantity, price)
         order = None
@@ -265,7 +265,7 @@ class OrderMgr:
 
         return stop_loss_order
 
-    def create_take_profit_trailing_order(self, take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration):
+    def create_take_profit_trailing_order(self, take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration, positionAmt):
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
             side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit))
@@ -356,7 +356,7 @@ class OrderMgr:
                 take_profit = take_profit - (atr * atr_multiplier)
                 profitPrice = float(take_profit_order["avgPrice"])
                 profit = (price - profitPrice) * float(take_profit_quantity)
-                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration)
+                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration, positionAmt)
                 iteration = iteration + 1
             
             time.sleep(1)
@@ -446,7 +446,7 @@ class OrderMgr:
                 take_profit = take_profit + (atr * atr_multiplier)
                 profitPrice = float(take_profit_order["avgPrice"])
                 profit = (profitPrice - price) * float(take_profit_quantity)
-                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration)
+                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration, positionAmt)
                 iteration = iteration + 1
             
             time.sleep(1)
