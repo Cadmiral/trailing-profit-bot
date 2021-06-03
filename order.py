@@ -322,15 +322,14 @@ class OrderMgr:
             take_profit_order = self.client.futures_get_order(symbol=symbol, orderId=take_profit_order['orderId'])
             take_profit_order_status = take_profit_order["status"] 
             take_profit_quantity = "{:.3f}".format(float(take_profit_order["executedQty"]))
-            if take_profit_quantity == order_quantity:
-                break
 
             openPosition = self.client.futures_position_information(symbol=symbol)
             for p in openPosition:
                 if p["symbol"] == symbol:
                     positionAmt = float(p["positionAmt"])
-                    if positionAmt == 0.0: 
-                        stop_loss_order_status = "FILLED"       
+
+            if positionAmt == 0.0: 
+                break     
 
             if take_profit_order_status == "FILLED":
                 atr_multiplier = 0.5
@@ -381,6 +380,10 @@ class OrderMgr:
         stop_loss_orderType = "STOP_MARKET"
         side = "SELL"
         symbol = order["symbol"]
+        if strategy == "highVol":
+            quantity_multiplier = 1
+        else:
+            quantity_multiplier = 0.5
         quantity_multiplier = 0.5
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
@@ -416,8 +419,8 @@ class OrderMgr:
             for p in openPosition:
                 if p["symbol"] == symbol:
                     positionAmt = abs(float(p["positionAmt"]))
-                    if positionAmt == 0.0:
-                        stop_loss_order_status = "FILLED"                    
+            if positionAmt == 0.0:
+                break                    
 
             if take_profit_order_status == "FILLED":    
                 atr_multiplier = 0.5
