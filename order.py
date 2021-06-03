@@ -100,7 +100,7 @@ class OrderMgr:
                     order = self.client.futures_cancel_all_open_orders(symbol=symbol)
                 self.log.debug("futures_create_order: %s", pprint.pformat(order))
             except BinanceAPIException as e:
-                self.log("symbol={0}, side={1}, type='MARKET', quantity={2}, reduceOnly='true'", symbol, side, positionAmt)
+                self.log.info("symbol={0}, side={1}, type='MARKET', quantity={2}, reduceOnly='true'", symbol, side, positionAmt)
                 order = self.client.futures_create_order(symbol=symbol, side=side, type='MARKET', quantity=positionAmt, reduceOnly='true')
                 self.log.exception("BinanceAPIException: %s", e)
                 message = "Exception occurred: Closing out all Positions", symbol
