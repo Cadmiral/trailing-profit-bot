@@ -182,7 +182,7 @@ class OrderMgr:
         takeProfit = float(data["take_profit"])
         stopLoss = float(data["stop_loss"])
         percentageVal = float(data["percentage"])
-        strategy = data(data["strategy"])
+        strategy = data["strategy"]
 
         # Adjust order quantity
         balance = self.get_balance()
