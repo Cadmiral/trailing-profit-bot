@@ -70,8 +70,8 @@ class OrderMgr:
 
     def create_order(self, orderType=None, symbol=None, side=None,
                      quantity=None, price=None, timeout=0, sleep=1, stopPrice=None, positionAmt=None):
-        self.log.info("Create %s %s order for %s: quantity=%s, price=%s",
-                      orderType, side, symbol, quantity, price)
+        self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s",
+                      orderType, side, symbol, quantity, price, positionAmt)
         order = None
         t0 = time.time()
         while order is None:
@@ -256,23 +256,23 @@ class OrderMgr:
         return True
 
     def create_stop_loss_trailing_order(self, symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration, positionAmt):
+        message = "Moving Stop Loss ({0}), symbol={1}, new stop_price={2:,.2f}, positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt)
+        self.log.info(message)
+        util.sendTelegram(message)
+
         stop_loss_order = self.create_order(orderType=stop_loss_orderType, symbol=symbol,
             side=side, quantity=order_quantity, stopPrice="{:.3f}".format(stop_loss), positionAmt=positionAmt)
 
-        message = "Moving Stop Loss ({0}), symbol={1}, new stop_price={2:,.2f}".format(iteration, symbol, stop_loss)
-        self.log.info(message)
-        util.sendTelegram(message)
 
         return stop_loss_order
 
     def create_take_profit_trailing_order(self, take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration, positionAmt):
+        message = "Take Profit ({0}) Reached, symbol={1}, new take_profit={2:,.2f}, positionAmt={3}".format(iteration, symbol, take_profit, positionAmt)
+        self.log.info(message)
+        util.sendTelegram("HELLO!!!")
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
             side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit))
-
-        message = "Take Profit ({0}) Reached, symbol={1}, new take_profit={2:,.2f}".format(iteration, symbol, take_profit)
-        self.log.info(message)
-        util.sendTelegram("HELLO!!!")
 
         message = "TP{2} Profit: ${0:.2f}, symbol: {1}".format(profit, symbol, iteration)
         self.log.info(message)
