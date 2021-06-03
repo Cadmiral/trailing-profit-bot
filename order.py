@@ -100,20 +100,19 @@ class OrderMgr:
                     order = self.client.futures_cancel_all_open_orders(symbol=symbol)
                 self.log.debug("futures_create_order: %s", pprint.pformat(order))
             except BinanceAPIException as e:
-                self.log.info("symbol={0}, side={1}, type='MARKET', quantity={2}, reduceOnly='true'", symbol, side, positionAmt)
-                order = self.client.futures_create_order(symbol=symbol, side=side, type='MARKET', quantity=positionAmt, reduceOnly='true')
                 self.log.exception("BinanceAPIException: %s", e)
+                order = self.client.futures_create_order(symbol=symbol, side=side, type='MARKET', quantity=positionAmt, reduceOnly='true')
+
                 message = "Exception occurred: Closing out all Positions", symbol
                 self.log.info(message)
                 util.sendTelegram(message)
             except Exception as e:
                 self.log.exception("Unexpected Error: %s", e)
                 message = "Exception occurred: Closing out all Positions", symbol
+                order = self.client.futures_create_order(symbol=symbol, side=side, type='MARKET', quantity=positionAmt, reduceOnly='true')
+                
                 self.log.info(message)
                 util.sendTelegram(message)
-                # order = self.client.futures_create_order(
-                #         symbol=symbol, side=side, type='MARKET',
-                #         quantity=positionAmt, reduceOnly='true')                
             finally:
                 time.sleep(sleep)
 
@@ -258,7 +257,7 @@ class OrderMgr:
     def create_stop_loss_trailing_order(self, symbol, side, stop_loss_orderType, stop_loss, order_quantity, iteration, positionAmt):
         message = "Moving Stop Loss ({0}), symbol={1}, new stop_price={2:,.2f}, positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt)
         self.log.info(message)
-        util.sendTelegram(message)
+        util.sendTelegram("New SL={0}, symbol={1}".format(stop_loss, symbol))
 
         stop_loss_order = self.create_order(orderType=stop_loss_orderType, symbol=symbol,
             side=side, quantity=order_quantity, stopPrice="{:.3f}".format(stop_loss), positionAmt=positionAmt)
@@ -267,16 +266,17 @@ class OrderMgr:
         return stop_loss_order
 
     def create_take_profit_trailing_order(self, take_profit_orderType, symbol, side, order_quantity, take_profit, profit, iteration, positionAmt):
-        message = "Take Profit ({0}) Reached, symbol={1}, new take_profit={2:,.2f}, positionAmt={3}".format(iteration, symbol, take_profit, positionAmt)
-        self.log.info(message)
-        util.sendTelegram("HELLO!!!")
-
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
             side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), positionAmt=positionAmt)
 
         message = "TP{2} Profit: ${0:.2f}, symbol: {1}".format(profit, symbol, iteration)
         self.log.info(message)
         util.sendTelegram(message)
+
+        message = "Take Profit ({0}) Reached, symbol={1}, new take_profit={2:,.2f}, positionAmt={3}".format(iteration, symbol, take_profit, positionAmt)
+        self.log.info(message)
+        util.sendTelegram("New TP={0}, symbol={1}".format(take_profit, symbol))
+
         return take_profit_order
 
     def send_short_orders(self, order, take_profit, stop_loss, open_balance, strategy):
