@@ -58,13 +58,23 @@ def webhook():
                 if isRunning:
                     log.warning("%s trade is running, no trade", symbol)
                     return "", 200
-
                 mgr.config.set(symbol, "isrunning", "yes")
                 mgr.write_config()
                 mgr.send_order(data)
                 mgr.config.set(symbol, "isrunning", "no")
                 mgr.write_config()
                 return "", 200
+            elif strategy == "highVol":
+                isRunning = mgr.config.getboolean(symbol, "isrunning")
+                if isRunning:
+                    log.warning("%s trade is running, no trade", symbol)
+                    return "", 200
+                mgr.config.set(symbol, "isrunning", "yes")
+                mgr.write_config()
+                mgr.send_order(data)
+                mgr.config.set(symbol, "isrunning", "no")
+                mgr.write_config()
+                return "", 200    
             else:
                 log.warning("Unhandled strategy: %s", strategy)
                 return "", 200

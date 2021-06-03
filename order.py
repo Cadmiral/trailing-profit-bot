@@ -182,6 +182,7 @@ class OrderMgr:
         takeProfit = float(data["take_profit"])
         stopLoss = float(data["stop_loss"])
         percentageVal = float(data["percentage"])
+        strategy = data(data["strategy"])
 
         # Adjust order quantity
         balance = self.get_balance()
@@ -249,9 +250,9 @@ class OrderMgr:
             self.client.futures_cancel_all_open_orders(symbol=symbol)
 
         if side == "BUY":
-            self.send_long_orders(order, takeProfit, stopLoss, balance)
+            self.send_long_orders(order, takeProfit, stopLoss, balance, strategy)
         else:
-            self.send_short_orders(order, takeProfit, stopLoss, balance)
+            self.send_short_orders(order, takeProfit, stopLoss, balance, strategy)
 
         return True
 
@@ -279,7 +280,7 @@ class OrderMgr:
         util.sendTelegram(message)
         return take_profit_order
 
-    def send_short_orders(self, order, take_profit, stop_loss, open_balance):
+    def send_short_orders(self, order, take_profit, stop_loss, open_balance, strategy):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
@@ -289,7 +290,10 @@ class OrderMgr:
         stop_loss_orderType = "STOP_MARKET"
         side = "BUY"
         symbol = order["symbol"]
-        quantity_multiplier = 0.5
+        if strategy == "highVol":
+            quantity_multiplier = 0.9
+        else:
+            quantity_multiplier = 0.5
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
@@ -365,7 +369,7 @@ class OrderMgr:
         self.log.info(message)
         util.sendTelegram(message)
 
-    def send_long_orders(self, order, take_profit, stop_loss, open_balance):
+    def send_long_orders(self, order, take_profit, stop_loss, open_balance, strategy):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
