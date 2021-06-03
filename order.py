@@ -302,12 +302,17 @@ class OrderMgr:
             quantityVal = int(quantityVal)
         order_quantity = "{:.3f}".format(quantityVal)
 
+        openPosition = self.client.futures_position_information(symbol=symbol)
+        for p in openPosition:
+            if p["symbol"] == symbol:
+                positionAmt = abs(float(p["positionAmt"]))
+
         stop_loss_order = self.create_order(
             symbol=symbol, side=side, orderType=stop_loss_orderType,
-            stopPrice="{:.3f}".format(stop_loss))
+            stopPrice="{:.3f}".format(stop_loss), positionAmt=positionAmt)
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit))
+            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), positionAmt=positionAmt)
 
         self.log.debug("Take profit order: %s", pprint.pformat(take_profit_order))
         self.log.debug("Stop loss order: %s", pprint.pformat(stop_loss_order))
@@ -393,13 +398,17 @@ class OrderMgr:
             quantityVal = int(quantityVal)
         order_quantity = "{:.2f}".format(quantityVal)
 
+        openPosition = self.client.futures_position_information(symbol=symbol)
+        for p in openPosition:
+            if p["symbol"] == symbol:
+                positionAmt = abs(float(p["positionAmt"]))
 
         stop_loss_order = self.create_order(
             symbol=symbol, side=side, orderType=stop_loss_orderType,
-            stopPrice="{:.3}".format(stop_loss))
+            stopPrice="{:.3f}".format(stop_loss), positionAmt=positionAmt)
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit))
+            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), positionAmt=positionAmt)
 
         self.log.debug("Take profit order: %s", pprint.pformat(take_profit_order))
         self.log.debug("Stop loss order: %s", pprint.pformat(stop_loss_order))
