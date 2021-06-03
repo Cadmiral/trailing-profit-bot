@@ -104,17 +104,17 @@ class OrderMgr:
                 message = ("Exception occurred: Closing out all Positions", symbol)
                 self.log.info(message)
                 util.sendTelegram(message)
-                order = self.client.futures_create_order(
-                        symbol=symbol, side=side, type='MARKET',
-                        quantity=positionAmt, reduceOnly='true')
+                # order = self.client.futures_create_order(
+                #         symbol=symbol, side=side, type='MARKET',
+                #         quantity=positionAmt, reduceOnly='true')
             except Exception as e:
                 self.log.exception("Unexpected Error: %s", e)
                 message = ("Exception occurred: Closing out all Positions", symbol)
                 self.log.info(message)
                 util.sendTelegram(message)
-                order = self.client.futures_create_order(
-                        symbol=symbol, side=side, type='MARKET',
-                        quantity=positionAmt, reduceOnly='true')                
+                # order = self.client.futures_create_order(
+                #         symbol=symbol, side=side, type='MARKET',
+                #         quantity=positionAmt, reduceOnly='true')                
             finally:
                 time.sleep(sleep)
 
