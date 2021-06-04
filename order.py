@@ -89,11 +89,11 @@ class OrderMgr:
                 elif orderType == "LIMIT":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
-                        timeInForce="GTC", quantity=quantity, price="{:.3f}".format(price))
+                        timeInForce="GTC", quantity=quantity, price=(price))
                 elif orderType == "TAKE_PROFIT_MARKET":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
-                        quantity=quantity, stopPrice="{:.3f}".format(stopPrice), reduceOnly=True)
+                        quantity=quantity, stopPrice=stopPrice, reduceOnly=True)
                 elif orderType == "STOP_MARKET":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
@@ -180,7 +180,7 @@ class OrderMgr:
         orderType = data["type"]
         symbol = data["symbol"]
         side = data["side"]
-        price = float(data["price"])
+        price = "{:.3f}".format(float(data["price"]))
         takeProfit = float(data["take_profit"])
         stopLoss = float(data["stop_loss"])
         percentageVal = float(data["percentage"])
@@ -309,7 +309,7 @@ class OrderMgr:
             quantity_multiplier = 0.5
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
-        price = float(order["avgPrice"])
+        price = "{:.3f}".format(float(order["avgPrice"]))
         atr = abs(price - take_profit)
         quantityVal = abs(order_quantity * quantity_multiplier)        
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
@@ -408,7 +408,7 @@ class OrderMgr:
         quantity_multiplier = 0.5
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
-        price = float(order["avgPrice"])
+        price = "{:.3f}".format(float(order["avgPrice"]))
         atr = abs(price - take_profit)
         quantityVal = abs(order_quantity * quantity_multiplier)        
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
