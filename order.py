@@ -180,7 +180,7 @@ class OrderMgr:
         orderType = data["type"]
         symbol = data["symbol"]
         side = data["side"]
-        price = "{:.3f}".format(float(data["price"]))
+        price = float(data["price"])
         takeProfit = float(data["take_profit"])
         stopLoss = float(data["stop_loss"])
         percentageVal = float(data["percentage"])
@@ -205,7 +205,7 @@ class OrderMgr:
         # Create new order
         t0 = time.time()
         order = self.create_order(orderType=orderType, symbol=symbol,
-                                  side=side, quantity=quantity, price=price,
+                                  side=side, quantity=quantity, price="{:.3f}".format(price),
                                   timeout=timeout)
         t1 = time.time()
         timeout -= (t1 - t0)
@@ -309,7 +309,7 @@ class OrderMgr:
             quantity_multiplier = 0.5
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
-        price = "{:.3f}".format(float(order["avgPrice"]))
+        price = float(order["avgPrice"])
         atr = abs(price - take_profit)
         quantityVal = abs(order_quantity * quantity_multiplier)        
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
@@ -408,7 +408,7 @@ class OrderMgr:
         quantity_multiplier = 0.5
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
-        price = "{:.3f}".format(float(order["avgPrice"]))
+        price = float(order["avgPrice"])
         atr = abs(price - take_profit)
         quantityVal = abs(order_quantity * quantity_multiplier)        
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
