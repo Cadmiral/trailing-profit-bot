@@ -73,6 +73,10 @@ class OrderMgr:
                      stopPrice=None, positionAmt=None):
         self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s",
                       orderType, side, symbol, quantity, price, positionAmt)
+
+        price = "{:.3f}".format(price)
+        stopPrice = "{:.3f}".format(stopLoss)
+
         order = None
         t0 = time.time()
         while order is None:
