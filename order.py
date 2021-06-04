@@ -89,7 +89,7 @@ class OrderMgr:
                 elif orderType == "LIMIT":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
-                        timeInForce="GTC", quantity=quantity, price=(price))
+                        timeInForce="GTC", quantity=quantity, price=price)
                 elif orderType == "TAKE_PROFIT_MARKET":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
@@ -205,7 +205,7 @@ class OrderMgr:
         # Create new order
         t0 = time.time()
         order = self.create_order(orderType=orderType, symbol=symbol,
-                                  side=side, quantity=quantity, price="{:.3f}".format(price),
+                                  side=side, quantity=quantity, price="{:.2f}".format(price),
                                   timeout=timeout)
         t1 = time.time()
         timeout -= (t1 - t0)
@@ -270,7 +270,7 @@ class OrderMgr:
         util.sendTelegram(message)
 
         stop_loss_order = self.create_order(orderType=stop_loss_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(stop_loss), 
+            side=side, quantity=order_quantity, stopPrice="{:.2f}".format(stop_loss), 
             positionAmt=positionAmt)
 
         return stop_loss_order
@@ -279,7 +279,7 @@ class OrderMgr:
         order_quantity, take_profit, profit, iteration, positionAmt):
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), 
+            side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
             positionAmt=positionAmt)
 
         message = "TP{2} Profit: ${0:.2f}, symbol: {1}".format(profit, symbol, iteration)
@@ -323,10 +323,10 @@ class OrderMgr:
 
         stop_loss_order = self.create_order(
             symbol=symbol, side=side, orderType=stop_loss_orderType,
-            stopPrice="{:.3f}".format(stop_loss), positionAmt=positionAmt)
+            stopPrice="{:.2f}".format(stop_loss), positionAmt=positionAmt)
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), 
+            side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
             positionAmt=positionAmt)
 
         self.log.debug("Take profit order: %s", pprint.pformat(take_profit_order))
