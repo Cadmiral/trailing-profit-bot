@@ -75,7 +75,7 @@ class OrderMgr:
                       orderType, side, symbol, quantity, price, positionAmt)
 
         price = "{:.3f}".format(price)
-        stopPrice = "{:.3f}".format(stopLoss)
+        stopPrice = "{:.3f}".format(stopPrice)
 
         order = None
         t0 = time.time()
