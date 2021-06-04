@@ -422,10 +422,10 @@ class OrderMgr:
 
         stop_loss_order = self.create_order(
             symbol=symbol, side=side, orderType=stop_loss_orderType,
-            stopPrice="{:.3f}".format(stop_loss), positionAmt=positionAmt)
+            stopPrice="{:.2f}".format(stop_loss), positionAmt=positionAmt)
 
         take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.3f}".format(take_profit), positionAmt=positionAmt)
+            side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), positionAmt=positionAmt)
 
         self.log.debug("Take profit order: %s", pprint.pformat(take_profit_order))
         self.log.debug("Stop loss order: %s", pprint.pformat(stop_loss_order))
