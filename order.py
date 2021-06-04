@@ -184,11 +184,8 @@ class OrderMgr:
         symbol = data["symbol"]
         side = data["side"]
         price = float(data["price"])
-        price = "{:.3f}".format(price)
         takeProfit = float(data["take_profit"])
-        takeProfit = "{:.3f}".format(takeProfit)
         stopLoss = float(data["stop_loss"])
-        stopLoss = "{:.3f}".format(stopLoss)
         percentageVal = float(data["percentage"])
         strategy = data["strategy"]
 
