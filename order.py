@@ -71,8 +71,8 @@ class OrderMgr:
     def create_order(self, orderType=None, symbol=None, side=None,
                      quantity=None, price=None, timeout=0, sleep=1, 
                      stopPrice=None, positionAmt=None):
-        self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s",
-                      orderType, side, symbol, quantity, price, positionAmt)
+        self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s, stopPrice=%s",
+                      orderType, side, symbol, quantity, price, positionAmt, stopPrice)
 
         order = None
         t0 = time.time()
@@ -97,7 +97,7 @@ class OrderMgr:
                 elif orderType == "STOP_MARKET":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
-                        stopPrice="{:.3f}".format(stopPrice), closePosition=True)
+                        stopPrice=stopPrice, closePosition=True)
                 else:
                     order = self.client.futures_cancel_all_open_orders(symbol=symbol)
                 self.log.debug("futures_create_order: %s", pprint.pformat(order))
