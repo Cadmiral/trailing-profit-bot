@@ -85,7 +85,7 @@ class OrderMgr:
             try:
                 if quantity == 0.0:
                     self.log.info("Order Quantity is 0, time to exit", timeout)
-                    return                 
+                    return
                 elif orderType == "LIMIT":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
@@ -114,7 +114,7 @@ class OrderMgr:
                 message = "Exception occurred: Closing out all Positions", symbol
                 order = self.client.futures_create_order(symbol=symbol, side=side, 
                     type='MARKET', quantity=positionAmt, reduceOnly='true')
-                
+
                 self.log.info(message)
                 util.sendTelegram(message)
             finally:
@@ -262,8 +262,7 @@ class OrderMgr:
     def create_stop_loss_trailing_order(self, symbol, side, stop_loss_orderType, 
         stop_loss, order_quantity, iteration, positionAmt):
 
-        message = ("Moving Stop Loss ({0}), symbol={1}\nnew stop_price={2:,.2f}, " +
-                   "positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt))
+        message = ("Moving Stop Loss ({0}), symbol={1}\nnew stop_price={2:,.2f}, positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt))
         self.log.info(message)
         util.sendTelegram(message)
 
@@ -284,8 +283,7 @@ class OrderMgr:
         self.log.info(message)
         util.sendTelegram(message)
 
-        message = ("Take Profit ({0}) Reached, symbol={1}\nnew take_profit={2:,.2f}, " + 
-                   "positionAmt={3}".format(iteration, symbol, take_profit, positionAmt))
+        message = ("Take Profit ({0}) Reached, symbol={1}\nnew take_profit={2:,.2f}, positionAmt={3}".format(iteration, symbol, take_profit, positionAmt))
         self.log.info(message)
         util.sendTelegram(message)
 
@@ -309,7 +307,7 @@ class OrderMgr:
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
         atr = abs(price - take_profit)
-        quantityVal = abs(order_quantity * quantity_multiplier)        
+        quantityVal = abs(order_quantity * quantity_multiplier)
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
             quantityVal = int(quantityVal)
         order_quantity = "{:.3f}".format(quantityVal)
@@ -332,12 +330,12 @@ class OrderMgr:
 
         iteration = int(1)
         stop_loss_order_status = "NEW"
-        while stop_loss_order_status != "FILLED" : 
+        while stop_loss_order_status != "FILLED" :
             self.log.debug("TP{0} and SL{0} positions are still open".format(iteration))
             stop_loss_order = self.client.futures_get_order(symbol=symbol, orderId=stop_loss_order['orderId'])
             stop_loss_order_status = stop_loss_order["status"] 
             take_profit_order = self.client.futures_get_order(symbol=symbol, orderId=take_profit_order['orderId'])
-            take_profit_order_status = take_profit_order["status"] 
+            take_profit_order_status = take_profit_order["status"]
             take_profit_quantity = "{:.3f}".format(float(take_profit_order["executedQty"]))
 
             openPosition = self.client.futures_position_information(symbol=symbol)
@@ -346,7 +344,7 @@ class OrderMgr:
                     positionAmt = float(p["positionAmt"])
 
             if positionAmt == 0.0: 
-                break     
+                break
 
             if take_profit_order_status == "FILLED":
                 atr_multiplier = 0.5
@@ -360,7 +358,7 @@ class OrderMgr:
                     quantityVal = int(quantityVal)
                     if quantityVal < 1 :
                         quantityVal = 1
-                order_quantity = "{:.2f}".format(quantityVal)                   
+                order_quantity = "{:.2f}".format(quantityVal)
 
                 #Create Stop Loss Order
                 if iteration == 1:
@@ -378,7 +376,7 @@ class OrderMgr:
                 take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, 
                                     side, order_quantity, take_profit, profit, iteration, positionAmt)
                 iteration = iteration + 1
-            
+
             time.sleep(1)
 
         self.log.info("StopLoss {0}: Cancelling all open orders for {1}".format(iteration, symbol))
@@ -408,7 +406,7 @@ class OrderMgr:
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
         atr = abs(price - take_profit)
-        quantityVal = abs(order_quantity * quantity_multiplier)        
+        quantityVal = abs(order_quantity * quantity_multiplier)
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
             quantityVal = int(quantityVal)
         order_quantity = "{:.2f}".format(quantityVal)
@@ -443,12 +441,12 @@ class OrderMgr:
                 if p["symbol"] == symbol:
                     positionAmt = abs(float(p["positionAmt"]))
             if positionAmt == 0.0:
-                break                    
+                break
 
-            if take_profit_order_status == "FILLED":    
+            if take_profit_order_status == "FILLED":
                 atr_multiplier = 0.5
                 quantity_multiplier = 0.5
-                openPosition = self.client.futures_position_information(symbol=symbol)              
+                openPosition = self.client.futures_position_information(symbol=symbol)
                 for p in openPosition:
                     if p["symbol"] == symbol:
                         positionAmt = float(p["positionAmt"])
@@ -457,24 +455,23 @@ class OrderMgr:
                     quantityVal = int(quantityVal)
                     if quantityVal < 1 :
                         quantityVal = 1
-                order_quantity = "{:.2f}".format(quantityVal) 
+                order_quantity = "{:.2f}".format(quantityVal)
 
                 #Create Stop Loss Order
                 if iteration == 1:
                     stop_loss = stop_loss + atr
                 else:
                     stop_loss = price + (atr * atr_multiplier * iteration)
-                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
+                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType,
                                   stop_loss, order_quantity, iteration, positionAmt)
 
                 #Create Take Profit Order
                 take_profit = take_profit + (atr * atr_multiplier)
                 profitPrice = float(take_profit_order["avgPrice"])
                 profit = (profitPrice - price) * float(take_profit_quantity)
-                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, 
+                take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol,
                                     side, order_quantity, take_profit, profit, iteration, positionAmt)
                 iteration = iteration + 1
-            
             time.sleep(1)
 
         self.log.info("SL{0}: Cancelling all open orders for {1}".format(iteration, symbol))
