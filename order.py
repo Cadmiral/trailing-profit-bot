@@ -219,9 +219,7 @@ class OrderMgr:
             return False
 
         # Send telegram
-        message = ("Create New Order for: {4}\nSide: {5}\nPercentage: {6}\nPrice: ${0:,.2f}\n" +
-                    "Quantity: {3:.2f}\nTake Profit: ${1:,.2f}\nStop Loss: ${2:,.2f}\n" +
-                    "Opening Balance: ${8:,.2f}\nMax Loss: ${7:,.2f}".format(
+        message = ("Create New Order for: {4}\nSide: {5}\nPercentage: {6}\nPrice: ${0:,.2f}\nQuantity: {3:.2f}\nTake Profit: ${1:,.2f}\nStop Loss: ${2:,.2f}\nOpening Balance: ${8:,.2f}\nMax Loss: ${7:,.2f}".format(
                     price, takeProfit, stopLoss, quantity, symbol, side, percentage, maxStopLossAmt, balance))
 
         util.sendTelegram(message)
