@@ -88,7 +88,7 @@ class OrderMgr:
                 elif orderType == "LIMIT":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
-                        timeInForce="GTC", quantity=quantity, price=(:.2f.price)
+                        timeInForce="GTC", quantity=quantity, price=price)
                 elif orderType == "TAKE_PROFIT_MARKET":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
