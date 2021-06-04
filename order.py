@@ -88,7 +88,7 @@ class OrderMgr:
                 elif orderType == "LIMIT":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
-                        timeInForce="GTC", quantity=quantity, price=price)
+                        timeInForce="GTC", quantity=quantity, price=(:.2f.price)
                 elif orderType == "TAKE_PROFIT_MARKET":
                     order = self.client.futures_create_order(
                         symbol=symbol, side=side, type=orderType,
@@ -179,9 +179,9 @@ class OrderMgr:
         orderType = data["type"]
         symbol = data["symbol"]
         side = data["side"]
-        price = float(data["price"])
-        takeProfit = float(data["take_profit"])
-        stopLoss = float(data["stop_loss"])
+        price = float("{:.3f}".format(data["price"]))
+        takeProfit = float("{:.3f}".format(data["take_profit"]))
+        stopLoss = float("{:.3f}".format(data["stop_loss"]))
         percentageVal = float(data["percentage"])
         strategy = data["strategy"]
 
