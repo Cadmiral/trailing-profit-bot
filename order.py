@@ -384,7 +384,7 @@ class OrderMgr:
         self.client.futures_cancel_all_open_orders(symbol=symbol)
         end_balance = self.get_balance()
         loss = end_balance - open_balance
-        message = "Total Loss/Profit: ${0:.2f}, symbol: {1}\nEnding Balance: ${2:,.2f}".format(loss, symbol, end_balance)
+        message = "Total Profit/Loss: ${0:.2f}, symbol: {1}\nEnding Balance: ${2:,.2f}".format(loss, symbol, end_balance)
         self.log.info(message)
         util.sendTelegram(message)
         #add one last failsafe
@@ -492,7 +492,7 @@ class OrderMgr:
         self.client.futures_cancel_all_open_orders(symbol=symbol)
         end_balance = self.get_balance()
         loss = end_balance - open_balance
-        message = "Total Loss/Profit: ${0:.2f}, symbol: {1}\nEnding Balance: ${2:,.2f}".format(loss, symbol, end_balance)
+        message = "Total Profit/Loss: ${0:.2f}, symbol: {1}\nEnding Balance: ${2:,.2f}".format(loss, symbol, end_balance)
         self.log.info(message)
         util.sendTelegram(message)
         #add one last failsafe
