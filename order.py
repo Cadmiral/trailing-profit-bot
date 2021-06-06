@@ -105,10 +105,9 @@ class OrderMgr:
                 self.log.debug("futures_create_order: %s", pprint.pformat(order))
             except BinanceAPIException as e:
                 self.log.exception("BinanceAPIException: %s", e)
+                message = "Exception occurred: Closing out all Positions", symbol
                 order = self.client.futures_create_order(symbol=symbol, side=side, 
                     type='MARKET', quantity=positionAmt, reduceOnly='true')
-
-                message = "Exception occurred: Closing out all Positions", symbol
                 self.log.info(message)
                 util.sendTelegram(message)
             except Exception as e:
