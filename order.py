@@ -363,7 +363,9 @@ class OrderMgr:
             if take_profit_order_status == "FILLED":
                 profitPrice = float(take_profit_get_order["avgPrice"])
                 profit = (price - profitPrice) * float(take_profit_quantity)
-                self.log.info("TP{0} Profit: ${1:.2f}, symbol: {2}".format(iteration, profit, symbol))
+                message = "TP{0} Profit: ${1:.2f}, symbol: {2}".format(iteration, profit, symbol)
+                self.log.info(message)
+                util.sendTelegram(message)
                 atr_multiplier = 0.5
 
         #         #Create Stop Loss Order
@@ -457,9 +459,12 @@ class OrderMgr:
                 break
 
             if take_profit_order_status == "FILLED":
+                message = "TP{0} Profit: ${1:.2f}, symbol: {2}".format(iteration, profit, symbol)
+                self.log.info(message)
+                util.sendTelegram(message)
+
                 profitPrice = float(take_profit_get_order["avgPrice"])
                 profit = (price - profitPrice) * float(take_profit_quantity)
-                self.log.info("TP{0} Profit: ${1:.2f}, symbol: {2}".format(iteration, profit, symbol))
                 atr_multiplier = 0.5
 
         #         #Create Stop Loss Order
