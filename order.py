@@ -469,7 +469,7 @@ class OrderMgr:
 
             if take_profit_order_status == "FILLED":
                 profitPrice = float(take_profit_get_order["avgPrice"])
-                profit = (price + profitPrice) * float(take_profit_quantity)
+                profit = (profitPrice - price) * float(take_profit_quantity)
                 self.log.info("price= {0}, profitPrice= {1}, quantity= {2}".format(price, profitPrice, take_profit_quantity))
                 message = "TP{0} Profit: ${1:.2f}, symbol: {2}".format(iteration, profit, symbol)
                 self.log.info(message)
