@@ -372,11 +372,11 @@ class OrderMgr:
                 if iteration == 2:
                     stop_loss = stop_loss + atr
                     stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
-                                  stop_loss, order_quantity, iteration, positionAmt)
+                                  stop_loss, iteration, positionAmt)
                 elif iteration >= 3 :
                     stop_loss = price - (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
                     stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
-                                  stop_loss, order_quantity, iteration, positionAmt)
+                                  stop_loss, iteration, positionAmt)
                 iteration += 1
             time.sleep(1)
 
