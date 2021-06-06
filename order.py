@@ -264,7 +264,7 @@ class OrderMgr:
     def create_stop_loss_trailing_order(self, symbol, side, stop_loss_orderType, 
         stop_loss, order_quantity, iteration, positionAmt):
 
-        message = ("Moving Stop Loss ({0}), symbol={1}\nnew stop_price={2:,.2f}, positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt))
+        message = ("Moving Stop Loss ({0}), symbol={1}new stop_price={2:,.2f}, positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt))
         self.log.info(message)
         util.sendTelegram(message)
 
