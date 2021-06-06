@@ -328,7 +328,7 @@ class OrderMgr:
             take_profit_dict["take_profit_order%s" %number] = self.create_order(orderType=take_profit_orderType, symbol=symbol,
                 side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
                 positionAmt=positionAmt)
-            order_quantity = float(order_quantity) * 0.75
+            order_quantity = float(order_quantity) * 0.5
             if symbol not in set(["BTCUSDT", "ETHUSDT"]):
                 order_quantity = int(order_quantity)
             take_profit = take_profit - atr * 0.5
@@ -336,8 +336,7 @@ class OrderMgr:
             self.log.debug("Take profit%s order: %s", number, take_profit_dict["take_profit_order%s" %number])
             # print(take_profit_dict['take_profit_order%s'%number])
         
-
-        # iteration = int(1)
+        iteration = int(1)
         # stop_loss_order_status = "NEW"
         # while stop_loss_order_status != "FILLED" :
 
