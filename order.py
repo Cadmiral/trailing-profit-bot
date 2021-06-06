@@ -339,7 +339,7 @@ class OrderMgr:
         
         iteration = 1
         stop_loss_order_status = "NEW"
-        while stop_loss_order_status != "FILLED" :
+        while stop_loss_order_status != "FILLED" and iteration < 6:
 
             self.log.debug("TP{0} and SL{0} positions are still open".format(iteration))
             
@@ -365,6 +365,7 @@ class OrderMgr:
                 util.sendTelegram(message)
                 profitPrice = float(take_profit_get_order["avgPrice"])
                 profit = (price - profitPrice) * float(take_profit_quantity)
+                self.log.info("price= {0}, profitPrice= {1}, quantity= {2}".format(price, profitPrice, take_profit_quantity))
                 message = "TP{0} Profit: ${1:.2f}, symbol: {2}".format(iteration, profit, symbol)
                 atr_multiplier = 0.5
 
@@ -437,7 +438,7 @@ class OrderMgr:
         
         iteration = 1
         stop_loss_order_status = "NEW"
-        while stop_loss_order_status != "FILLED" :
+        while stop_loss_order_status != "FILLED" and iteration < 6:
 
             self.log.debug("TP{0} and SL{0} positions are still open".format(iteration))
             
@@ -461,6 +462,7 @@ class OrderMgr:
             if take_profit_order_status == "FILLED":
                 profitPrice = float(take_profit_get_order["avgPrice"])
                 profit = (price + profitPrice) * float(take_profit_quantity)
+                self.log.info("price= {0}, profitPrice= {1}, quantity= {2}".format(price, profitPrice, take_profit_quantity))
                 message = "TP{0} Profit: ${1:.2f}, symbol: {2}".format(iteration, profit, symbol)
                 self.log.info(message)
                 util.sendTelegram(message)
