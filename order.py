@@ -310,7 +310,7 @@ class OrderMgr:
         quantityVal = abs(order_quantity * quantity_multiplier)
         if symbol not in set(["BTCUSDT", "ETHUSDT"]):
             quantityVal = int(quantityVal)
-        order_quantity = "{:.1f}".format(quantityVal)
+        order_quantity = "{:.2f}".format(quantityVal)
 
         openPosition = self.client.futures_position_information(symbol=symbol)
         for p in openPosition:
@@ -329,6 +329,8 @@ class OrderMgr:
                 side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
                 positionAmt=positionAmt)
             order_quantity = float(order_quantity) * 0.75
+            if symbol not in set(["BTCUSDT", "ETHUSDT"]):
+                order_quantity = int(order_quantity)
             take_profit = take_profit - atr * 0.5
             time.sleep(1)
             self.log.debug("Take profit%s order: %s", number, take_profit_dict["take_profit_order%s" %number])
