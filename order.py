@@ -390,12 +390,12 @@ class OrderMgr:
         util.sendTelegram(message)
         #add one last failsafe
         openPosition = self.client.futures_position_information(symbol=symbol)
-            for p in openPosition:
-                if p["symbol"] == symbol:
-                    positionAmt = float(p["positionAmt"])
-                    if positionAmt != 0.0: 
-                        self.client.futures_create_order(symbol=symbol, side=side, 
-                        type='MARKET', quantity=positionAmt, reduceOnly='true')
+        for p in openPosition:
+            if p["symbol"] == symbol:
+                positionAmt = float(p["positionAmt"])
+                if positionAmt != 0.0: 
+                    self.client.futures_create_order(symbol=symbol, side=side, 
+                    type='MARKET', quantity=positionAmt, reduceOnly='true')
 
     def send_long_orders(self, order, take_profit, stop_loss, open_balance, strategy):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
@@ -498,9 +498,9 @@ class OrderMgr:
         util.sendTelegram(message)
         #add one last failsafe
         openPosition = self.client.futures_position_information(symbol=symbol)
-            for p in openPosition:
-                if p["symbol"] == symbol:
-                    positionAmt = float(p["positionAmt"])
-                    if positionAmt != 0.0: 
-                        self.client.futures_create_order(symbol=symbol, side=side, 
-                        type='MARKET', quantity=positionAmt, reduceOnly='true')
+        for p in openPosition:
+            if p["symbol"] == symbol:
+                positionAmt = float(p["positionAmt"])
+                if positionAmt != 0.0: 
+                    self.client.futures_create_order(symbol=symbol, side=side, 
+                    type='MARKET', quantity=positionAmt, reduceOnly='true')
