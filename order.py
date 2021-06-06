@@ -85,6 +85,8 @@ class OrderMgr:
             try:
                 if quantity == 0.0:
                     self.log.info("Order Quantity is 0, time to exit", timeout)
+                    order = self.client.futures_create_order(symbol=symbol, side=side, 
+                    type='MARKET', quantity=positionAmt, reduceOnly='true')
                     return
                 elif orderType == "LIMIT":
                     order = self.client.futures_create_order(
