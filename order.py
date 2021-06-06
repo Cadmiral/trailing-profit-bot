@@ -326,7 +326,7 @@ class OrderMgr:
         self.log.debug("Stop loss order: %s", pprint.pformat(stop_loss_order))
 
         take_profit_dict = {}
-        for number in range(1, 5):
+        for number in range(1, 6):
             take_profit_dict["take_profit_order%s" %number] = self.create_order(orderType=take_profit_orderType, symbol=symbol,
                 side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
                 positionAmt=positionAmt)
@@ -372,7 +372,7 @@ class OrderMgr:
                     stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
                                   stop_loss, order_quantity, iteration, positionAmt)
                 elif iteration >= 3 :
-                    stop_loss = price + (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
+                    stop_loss = price - (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
                     stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
                                   stop_loss, order_quantity, iteration, positionAmt)
                 iteration += 1
