@@ -262,14 +262,14 @@ class OrderMgr:
         return True
 
     def create_stop_loss_trailing_order(self, symbol, side, stop_loss_orderType, 
-        stop_loss, order_quantity, iteration, positionAmt):
+        stop_loss, iteration, positionAmt):
 
         message = ("Moving Stop Loss ({0}), symbol={1}new stop_price={2:,.2f}, positionAmt={3}".format(iteration, symbol, stop_loss, positionAmt))
         self.log.info(message)
         util.sendTelegram(message)
 
         stop_loss_order = self.create_order(orderType=stop_loss_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.2f}".format(stop_loss), 
+            side=side, stopPrice="{:.2f}".format(stop_loss), 
             positionAmt=positionAmt)
 
         return stop_loss_order
@@ -471,11 +471,11 @@ class OrderMgr:
                 if iteration == 2:
                     stop_loss = stop_loss + atr
                     stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
-                                  stop_loss, order_quantity, iteration, positionAmt)
+                                  stop_loss, iteration, positionAmt)
                 elif iteration >= 3 :
                     stop_loss = price + (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
                     stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
-                                  stop_loss, order_quantity, iteration, positionAmt)
+                                  stop_loss, iteration, positionAmt)
                 iteration += 1
             time.sleep(1)
 
