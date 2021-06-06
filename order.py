@@ -368,16 +368,14 @@ class OrderMgr:
 
         #         #Create Stop Loss Order
                 if iteration == 1:
-                    break
+                    continue
                 elif iteration == 2 :
                     stop_loss = stop_loss - atr
                 else:
                     stop_loss = price - (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
                 stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
                                   stop_loss, order_quantity, iteration, positionAmt)
-
                 iteration += 1
-
             time.sleep(1)
 
         self.log.info("StopLoss {0}: Cancelling all open orders for {1}".format(iteration, symbol))
@@ -428,7 +426,7 @@ class OrderMgr:
         self.log.debug("Stop loss order: %s", pprint.pformat(stop_loss_order))
 
         take_profit_dict = {}
-        for number in range(1, 5):
+        for number in range(1, 6):
             take_profit_dict["take_profit_order%s" %number] = self.create_order(orderType=take_profit_orderType, symbol=symbol,
                 side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
                 positionAmt=positionAmt)
@@ -470,7 +468,7 @@ class OrderMgr:
 
         #         #Create Stop Loss Order
                 if iteration == 1:
-                    break
+                    continue
                 elif iteration == 2 :
                     stop_loss = stop_loss + atr
                 else:
@@ -478,7 +476,7 @@ class OrderMgr:
                 stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
                                   stop_loss, order_quantity, iteration, positionAmt)
 
-                iteration = iteration + 1
+                iteration += 1
             time.sleep(1)
 
         self.log.info("SL{0}: Cancelling all open orders for {1}".format(iteration, symbol))
