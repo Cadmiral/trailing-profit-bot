@@ -367,13 +367,13 @@ class OrderMgr:
                 atr_multiplier = 0.5
 
         #         #Create Stop Loss Order
-                if iteration == 1:
-                    continue
-                elif iteration == 2 :
-                    stop_loss = stop_loss - atr
-                else:
-                    stop_loss = price - (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
-                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
+                if iteration == 2:
+                    stop_loss = stop_loss + atr
+                    stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
+                                  stop_loss, order_quantity, iteration, positionAmt)
+                elif iteration >= 3 :
+                    stop_loss = price + (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
+                    stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
                                   stop_loss, order_quantity, iteration, positionAmt)
                 iteration += 1
             time.sleep(1)
@@ -419,10 +419,6 @@ class OrderMgr:
             symbol=symbol, side=side, orderType=stop_loss_orderType,
             stopPrice="{:.2f}".format(stop_loss), positionAmt=positionAmt)
 
-        take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), positionAmt=positionAmt)
-
-        self.log.debug("Take profit order: %s", pprint.pformat(take_profit_order))
         self.log.debug("Stop loss order: %s", pprint.pformat(stop_loss_order))
 
         take_profit_dict = {}
@@ -467,15 +463,14 @@ class OrderMgr:
                 atr_multiplier = 0.5
 
         #         #Create Stop Loss Order
-                if iteration == 1:
-                    continue
-                elif iteration == 2 :
+                if iteration == 2:
                     stop_loss = stop_loss + atr
-                else:
-                    stop_loss = price + (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
-                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
+                    stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
                                   stop_loss, order_quantity, iteration, positionAmt)
-
+                elif iteration >= 3 :
+                    stop_loss = price + (atr * atr_multiplier * (iteration-2)) # move stopLoss to 50% atr increments after TP3 reached
+                    stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
+                                  stop_loss, order_quantity, iteration, positionAmt)
                 iteration += 1
             time.sleep(1)
 
