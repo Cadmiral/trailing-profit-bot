@@ -328,7 +328,7 @@ class OrderMgr:
             take_profit_dict["take_profit_order%s" %number] = self.create_order(orderType=take_profit_orderType, symbol=symbol,
                 side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
                 positionAmt=positionAmt)
-            order_quantity = order_quantity * 0.5
+            order_quantity = float(order_quantity) * 0.5
             take_profit = take_profit - atr*.05
             time.sleep(1)
             self.log.debug("Take profit%s order: %s", pprint.pformat(number, take_profit_dict["take_profit_order%s" %number]))
