@@ -331,7 +331,7 @@ class OrderMgr:
             order_quantity = float(order_quantity) * 0.5
             take_profit = take_profit - atr*.05
             time.sleep(1)
-            self.log.debug("Take profit%s order: %s", pprint.pformat(number, take_profit_dict["take_profit_order%s" %number]))
+            self.log.debug("Take profit%s order: %s" number, take_profit_dict["take_profit_order%s" %number])
             # print(take_profit_dict['take_profit_order%s'%number])
         
 
