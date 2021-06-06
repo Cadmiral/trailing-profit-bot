@@ -338,33 +338,30 @@ class OrderMgr:
             self.log.debug("Take profit%s order: %s", number, take_profit_dict["take_profit_order%s" %number])
             # print(take_profit_dict['take_profit_order%s'%number])
         
-        iteration = int(1)
-        # stop_loss_order_status = "NEW"
-        # while stop_loss_order_status != "FILLED" :
+        iteration = 1
+        stop_loss_order_status = "NEW"
+        while stop_loss_order_status != "FILLED" :
 
         #     self.log.debug("TP{0} and SL{0} positions are still open".format(iteration))
             
-        #     stop_loss_order = self.client.futures_get_order(symbol=symbol, orderId=stop_loss_order['orderId'])
+            stop_loss_order = self.client.futures_get_order(symbol=symbol, orderId=stop_loss_order['orderId'])            
+            stop_loss_order_status = stop_loss_order["status"] 
             
-        #     stop_loss_order_status = stop_loss_order["status"] 
-            
+            take_profit_order = take_profit_dict["take_profit_order%s" %iteration]
+            take_profit_oder_id = take_profit_order['orderId']
+            take_profit_get_order = self.client.futures_get_order(symbol=symbol, orderId=take_profit_oder_id)
+            take_profit_order_status = take_profit_get_order["status"]
 
-        #     take_profit_order(i) = self.client.futures_get_order(symbol=symbol, orderId=take_profit_order['orderId'])
-            
-        #     take_profit_order_status = take_profit_order["status"]
-            
-        #     take_profit_quantity = "{:.2f}".format(float(take_profit_order["executedQty"]))
+            openPosition = self.client.futures_position_information(symbol=symbol)
+            for p in openPosition:
+                if p["symbol"] == symbol:
+                    positionAmt = float(p["positionAmt"])
 
-        #     openPosition = self.client.futures_position_information(symbol=symbol)
-        #     for p in openPosition:
-        #         if p["symbol"] == symbol:
-        #             positionAmt = float(p["positionAmt"])
+            if positionAmt == 0.0: 
+                break
 
-        #     if positionAmt == 0.0: 
-        #         break
-
-        #     if take_profit_order_status == "FILLED":
-        #         atr_multiplier = 0.5
+            if take_profit_order_status == "FILLED":
+                atr_multiplier = 0.5
         #         quantity_multiplier = 0.5
         #         openPosition = self.client.futures_position_information(symbol=symbol)
         #         for p in openPosition:
@@ -378,12 +375,12 @@ class OrderMgr:
         #         order_quantity = "{:.2f}".format(quantityVal)
 
         #         #Create Stop Loss Order
-        #         if iteration == 1:
-        #             stop_loss = stop_loss - atr
-        #         else:
-        #             stop_loss = price - (atr * atr_multiplier * iteration)
-        #         stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
-        #                           stop_loss, order_quantity, iteration, positionAmt)
+                if iteration == 1:
+                    stop_loss = stop_loss - atr
+                else:
+                    stop_loss = price - (atr * atr_multiplier * iteration)
+                stop_loss_order = self.create_stop_loss_trailing_order(symbol, side, stop_loss_orderType, 
+                                  stop_loss, order_quantity, iteration, positionAmt)
 
         #         #Create Take Profit Order
  
@@ -392,9 +389,9 @@ class OrderMgr:
         #         profit = (price - profitPrice) * float(take_profit_quantity)
         #         take_profit_order = self.create_take_profit_trailing_order(take_profit_orderType, symbol, 
         #                             side, order_quantity, take_profit, profit, iteration, positionAmt)
-        #         iteration = iteration + 1
+                iteration += 1
 
-        #     time.sleep(1)
+            time.sleep(1)
 
         self.log.info("StopLoss {0}: Cancelling all open orders for {1}".format(iteration, symbol))
         self.client.futures_cancel_all_open_orders(symbol=symbol)
