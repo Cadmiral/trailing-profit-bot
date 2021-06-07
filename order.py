@@ -332,6 +332,8 @@ class OrderMgr:
             order_quantity = float(order_quantity) * 0.5
             if symbol not in set(["BTCUSDT", "ETHUSDT"]):
                 order_quantity = int(order_quantity)
+            else:
+                order_quantity = "{:.2f}".format(order_quantity)
             take_profit = take_profit - atr * 0.5
             time.sleep(1)
             self.log.debug("Take profit%s order: %s", number, take_profit_dict["take_profit_order%s" %number])
