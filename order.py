@@ -356,7 +356,7 @@ class OrderMgr:
             openPosition = self.client.futures_position_information(symbol=symbol)
             for p in openPosition:
                 if p["symbol"] == symbol:
-                    positionAmt = float(p["positionAmt"])
+                    positionAmt = abs(float(p["positionAmt"]))
 
             if positionAmt == 0.0: 
                 break
@@ -393,7 +393,7 @@ class OrderMgr:
         openPosition = self.client.futures_position_information(symbol=symbol)
         for p in openPosition:
             if p["symbol"] == symbol:
-                positionAmt = float(p["positionAmt"])
+                positionAmt = abs(float(p["positionAmt"]))
                 if positionAmt != 0.0: 
                     self.client.futures_create_order(symbol=symbol, side=side, 
                     type='MARKET', quantity=positionAmt, reduceOnly='true')
@@ -465,7 +465,7 @@ class OrderMgr:
             openPosition = self.client.futures_position_information(symbol=symbol)
             for p in openPosition:
                 if p["symbol"] == symbol:
-                    positionAmt = float(p["positionAmt"])
+                    positionAmt = abs(float(p["positionAmt"]))
 
             if positionAmt == 0.0: 
                 break
@@ -503,7 +503,7 @@ class OrderMgr:
         openPosition = self.client.futures_position_information(symbol=symbol)
         for p in openPosition:
             if p["symbol"] == symbol:
-                positionAmt = float(p["positionAmt"])
+                positionAmt = abs(float(p["positionAmt"]))
                 if positionAmt != 0.0: 
                     self.client.futures_create_order(symbol=symbol, side=side, 
                     type='MARKET', quantity=positionAmt, reduceOnly='true')
