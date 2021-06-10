@@ -38,6 +38,22 @@ class OrderMgr:
 
         return success
 
+    def get_quantity_precision(self, symbol):    
+        info = client.futures_exchange_info() 
+        info = info['symbols']
+        for x in range(len(info)):
+            if info[x]['symbol'] == symbol:
+                return info[x]['quantityPrecision']
+        return None
+
+    def get_price_precision(self, symbol):    
+        info = client.futures_exchange_info() 
+        info = info['symbols']
+        for x in range(len(info)):
+            if info[x]['symbol'] == currency_symbol:
+                return info[x]['pricePrecision']
+        return None
+
     def get_balance(self, symbol="USDT", timeout=0, sleep=1):
         self.log.info("Get balance for %s", symbol)
         balance = 0.0
@@ -69,10 +85,17 @@ class OrderMgr:
         return balance
 
     def create_order(self, orderType=None, symbol=None, side=None,
-                     quantity=None, price=None, timeout=0, sleep=1, 
-                     stopPrice=None, positionAmt=None):
+                     quantity=None, price=None, timeout=0, sleep=1, stopPrice=None, 
+                     positionAmt=None, precision_price=None, precision_quantity=None):
         self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s, stopPrice=%s",
                       orderType, side, symbol, quantity, price, positionAmt, stopPrice)
+
+        precision_price = self.get_price_precision(symbol)
+        precision_quantity = self.get_quantity_precision(symbol)
+
+        quantity = float("{0:.{1}f}".format(quantityVal, precision_quantity))
+        price = "{0:.{1}f}".format(price, precision_price)
+        stopPrice = "{0:.{1}f}".format(stopPrice, precision_price)
 
         order = None
         t0 = time.time()
@@ -186,27 +209,23 @@ class OrderMgr:
         stopLoss = float(data["stop_loss"])
         percentageVal = float(data["percentage"])
         strategy = data["strategy"]
-
+        precision_price = self.get_price_precision(symbol)
+        precision_quantity = self.get_quantity_precision(symbol)
         # Adjust order quantity
         balance = self.get_balance()
         percentage = percentageVal / 100.0
 
         stopLossAmt = abs(price - stopLoss)
         maxStopLossAmt = float(balance * percentage)
-        quantityVal = maxStopLossAmt / stopLossAmt
+        quantity = maxStopLossAmt / stopLossAmt
 
-        # Round the quantity if not in set
-        if symbol not in set(["BTCUSDT", "ETHUSDT"]):
-            quantityVal = int(quantityVal)
-
-        quantity = float("{:.2f}".format(quantityVal))
         self.log.debug("stopLossAmt=%.2f, maxStopLossAmt=%.2f, quantity=%s",
                        stopLossAmt, maxStopLossAmt, quantity)
 
         # Create new order
         t0 = time.time()
         order = self.create_order(orderType=orderType, symbol=symbol,
-                                  side=side, quantity=quantity, price="{:.2f}".format(price),
+                                  side=side, quantity=quantity, price=price,
                                   timeout=timeout)
         t1 = time.time()
         timeout -= (t1 - t0)
@@ -254,9 +273,9 @@ class OrderMgr:
             self.client.futures_cancel_all_open_orders(symbol=symbol)
 
         if side == "BUY":
-            self.send_long_orders(order, takeProfit, stopLoss, balance, strategy)
+            self.send_long_orders(order, takeProfit, stopLoss, balance, strategy, precision_price, precision_quantity)
         else:
-            self.send_short_orders(order, takeProfit, stopLoss, balance, strategy)
+            self.send_short_orders(order, takeProfit, stopLoss, balance, strategy, precision_price, precision_quantity)
 
         return True
 
@@ -268,29 +287,11 @@ class OrderMgr:
         util.sendTelegram(message)
 
         stop_loss_order = self.create_order(orderType=stop_loss_orderType, symbol=symbol,
-            side=side, stopPrice="{:.2f}".format(stop_loss), 
-            positionAmt=positionAmt)
+            side=side, stopPrice=stop_loss, positionAmt=positionAmt)
 
         return stop_loss_order
 
-    def create_take_profit_trailing_order(self, take_profit_orderType, symbol, side, 
-        order_quantity, take_profit, profit, iteration, positionAmt):
-
-        take_profit_order = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-            side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
-            positionAmt=positionAmt)
-
-        message = "TP{2} Profit: ${0:.2f}, symbol: {1}".format(profit, symbol, iteration)
-        self.log.info(message)
-        util.sendTelegram(message)
-
-        message = ("Take Profit ({0}) Reached, symbol={1}\nnew take_profit={2:,.2f}, positionAmt={3}".format(iteration, symbol, take_profit, positionAmt))
-        self.log.info(message)
-        util.sendTelegram(message)
-
-        return take_profit_order
-
-    def send_short_orders(self, order, take_profit, stop_loss, open_balance, strategy):
+    def send_short_orders(self, order, take_profit, stop_loss, open_balance, strategy, precision_price, precision_quantity):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
@@ -308,10 +309,7 @@ class OrderMgr:
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
         atr = abs(price - take_profit)
-        quantityVal = abs(order_quantity * quantity_multiplier)
-        if symbol not in set(["BTCUSDT", "ETHUSDT"]):
-            quantityVal = int(quantityVal)
-        order_quantity = "{:.2f}".format(quantityVal)
+        order_quantity = abs(order_quantity * quantity_multiplier)
 
         openPosition = self.client.futures_position_information(symbol=symbol)
         for p in openPosition:
@@ -320,20 +318,20 @@ class OrderMgr:
 
         stop_loss_order = self.create_order(
             symbol=symbol, side=side, orderType=stop_loss_orderType,
-            stopPrice="{:.2f}".format(stop_loss), positionAmt=positionAmt)
+            stopPrice=stop_loss, positionAmt=positionAmt)
 
         self.log.debug("Stop loss order: %s", pprint.pformat(stop_loss_order))
 
         take_profit_dict = {}
         for number in range(1, 6):
             take_profit_dict["take_profit_order%s" %number] = self.create_order(orderType=take_profit_orderType, symbol=symbol,
-                side=side, quantity=order_quantity, stopPrice="{:.2f}".format(take_profit), 
+                side=side, quantity=order_quantity, stopPrice=take_profit, 
                 positionAmt=positionAmt)
             order_quantity = float(order_quantity) * 0.5
-            if symbol not in set(["BTCUSDT", "ETHUSDT"]):
-                order_quantity = int(order_quantity)
-            else:
-                order_quantity = "{:.3f}".format(order_quantity)
+            # if symbol not in set(["BTCUSDT", "ETHUSDT"]):
+            #     order_quantity = int(order_quantity)
+            # else:
+            #     order_quantity = "{:.3f}".format(order_quantity)
             take_profit = take_profit - atr * 0.5
             time.sleep(1)
             self.log.debug("Take profit%s order: %s", number, take_profit_dict["take_profit_order%s" %number])
@@ -398,7 +396,7 @@ class OrderMgr:
                     self.client.futures_create_order(symbol=symbol, side=side, 
                     type='MARKET', quantity=positionAmt, reduceOnly='true')
 
-    def send_long_orders(self, order, take_profit, stop_loss, open_balance, strategy):
+    def send_long_orders(self, order, take_profit, stop_loss, open_balance, strategy, precision_price, precision_quantity):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
