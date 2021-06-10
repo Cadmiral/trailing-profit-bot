@@ -86,14 +86,14 @@ class OrderMgr:
 
     def create_order(self, orderType=None, symbol=None, side=None,
                      quantity=None, price=None, timeout=0, sleep=1, stopPrice=None, 
-                     positionAmt=None, precision_price=None, precision_quantity=None):
+                     positionAmt=None):
         self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s, stopPrice=%s",
                       orderType, side, symbol, quantity, price, positionAmt, stopPrice)
 
         precision_price = self.get_price_precision(symbol)
         precision_quantity = self.get_quantity_precision(symbol)
 
-        quantity = float("{0:.{1}f}".format(quantityVal, precision_quantity))
+        quantity = float("{0:.{1}f}".format(quantity, precision_quantity))
         price = "{0:.{1}f}".format(price, precision_price)
         stopPrice = "{0:.{1}f}".format(stopPrice, precision_price)
 
@@ -273,9 +273,9 @@ class OrderMgr:
             self.client.futures_cancel_all_open_orders(symbol=symbol)
 
         if side == "BUY":
-            self.send_long_orders(order, takeProfit, stopLoss, balance, strategy, precision_price, precision_quantity)
+            self.send_long_orders(order, takeProfit, stopLoss, balance, strategy)
         else:
-            self.send_short_orders(order, takeProfit, stopLoss, balance, strategy, precision_price, precision_quantity)
+            self.send_short_orders(order, takeProfit, stopLoss, balance, strategy)
 
         return True
 
@@ -291,7 +291,7 @@ class OrderMgr:
 
         return stop_loss_order
 
-    def send_short_orders(self, order, take_profit, stop_loss, open_balance, strategy, precision_price, precision_quantity):
+    def send_short_orders(self, order, take_profit, stop_loss, open_balance, strategy):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
@@ -396,7 +396,7 @@ class OrderMgr:
                     self.client.futures_create_order(symbol=symbol, side=side, 
                     type='MARKET', quantity=positionAmt, reduceOnly='true')
 
-    def send_long_orders(self, order, take_profit, stop_loss, open_balance, strategy, precision_price, precision_quantity):
+    def send_long_orders(self, order, take_profit, stop_loss, open_balance, strategy):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
