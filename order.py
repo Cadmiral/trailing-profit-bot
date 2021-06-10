@@ -85,7 +85,7 @@ class OrderMgr:
         return balance
 
     def create_order(self, orderType=None, symbol=None, side=None,
-                     quantity=None, price=None, timeout=0, sleep=1, stopPrice=None, 
+                     quantity=0.0, price=0.0, timeout=0, sleep=1, stopPrice=0.0, 
                      positionAmt=None):
         self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s, stopPrice=%s",
                       orderType, side, symbol, quantity, price, positionAmt, stopPrice)
