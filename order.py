@@ -39,7 +39,7 @@ class OrderMgr:
         return success
 
     def get_quantity_precision(self, symbol):    
-        info = client.futures_exchange_info() 
+        info = self.client.futures_exchange_info() 
         info = info['symbols']
         for x in range(len(info)):
             if info[x]['symbol'] == symbol:
@@ -47,7 +47,7 @@ class OrderMgr:
         return None
 
     def get_price_precision(self, symbol):    
-        info = client.futures_exchange_info() 
+        info = self.client.futures_exchange_info() 
         info = info['symbols']
         for x in range(len(info)):
             if info[x]['symbol'] == currency_symbol:
