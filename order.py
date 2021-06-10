@@ -85,17 +85,17 @@ class OrderMgr:
         return balance
 
     def create_order(self, orderType=None, symbol=None, side=None,
-                     quantity=0.0, price=0.0, timeout=0, sleep=1, stopPrice=0.0, 
+                     quantity=None, price=0.0, timeout=0, sleep=1, stopPrice=0.0, 
                      positionAmt=None):
-        self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s, stopPrice=%s",
-                      orderType, side, symbol, quantity, price, positionAmt, stopPrice)
 
         precision_price = self.get_price_precision(symbol)
         precision_quantity = self.get_quantity_precision(symbol)
-
         quantity = float("{0:.{1}f}".format(quantity, precision_quantity))
         price = "{0:.{1}f}".format(price, precision_price)
         stopPrice = "{0:.{1}f}".format(stopPrice, precision_price)
+
+        self.log.info("Create %s %s order for %s: quantity=%s, price=%s, positionAmt=%s, stopPrice=%s",
+                      orderType, side, symbol, quantity, price, positionAmt, stopPrice)
 
         order = None
         t0 = time.time()
