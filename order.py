@@ -50,7 +50,7 @@ class OrderMgr:
         info = self.client.futures_exchange_info() 
         info = info['symbols']
         for x in range(len(info)):
-            if info[x]['symbol'] == currency_symbol:
+            if info[x]['symbol'] == symbol:
                 return info[x]['pricePrecision']
         return None
 
