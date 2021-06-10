@@ -91,7 +91,7 @@ class OrderMgr:
         precision_price = self.get_price_precision(symbol)
         precision_quantity = self.get_quantity_precision(symbol)
         
-        if not quantity:
+        if quantity:
             quantity = float("{0:.{1}f}".format(quantity, precision_quantity))
         price = "{0:.{1}f}".format(price, precision_price)
         stopPrice = "{0:.{1}f}".format(stopPrice, precision_price)
