@@ -303,10 +303,10 @@ class OrderMgr:
         stop_loss_orderType = "STOP_MARKET"
         side = "BUY"
         symbol = order["symbol"]
-        if strategy == "highVol":
-            quantity_multiplier = 1
-        else:
-            quantity_multiplier = 0.5
+        # if strategy == "highVol":
+        #     quantity_multiplier = 1
+        # else:
+        quantity_multiplier = 0.5    
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
@@ -404,10 +404,9 @@ class OrderMgr:
         stop_loss_orderType = "STOP_MARKET"
         side = "SELL"
         symbol = order["symbol"]
-        if strategy == "highVol":
-            quantity_multiplier = 1
-        else:
-            quantity_multiplier = 0.5
+        # if strategy == "highVol":
+        #     quantity_multiplier = 1
+        # else:
         quantity_multiplier = 0.5
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
