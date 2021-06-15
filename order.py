@@ -200,7 +200,7 @@ class OrderMgr:
 
         return orders
 
-    def send_order(self, data, timeout=250.0):
+    def send_order(self, data, timeout=120.0):
         self.log.info("Send order: %s", pprint.pformat(data))
 
         orderType = data["type"]
