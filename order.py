@@ -233,7 +233,7 @@ class OrderMgr:
         timeout -= (t1 - t0)
         if timeout <= 0.0:
             self.client.futures_cancel_all_open_orders(symbol=symbol)
-            util.sendTelegram("Order Limit Timeout: Exceeded 5 minutes")
+            util.sendTelegram("Order Limit Timeout: Exceeded 2 minutes")
             return False
 
         if order is None:
@@ -256,14 +256,14 @@ class OrderMgr:
         timeout -= (t1 - t0)
         if timeout <= 0.0:
             self.client.futures_cancel_all_open_orders(symbol=symbol)
-            util.sendTelegram("Order Limit Timeout: Exceeded 5 minutes")
+            util.sendTelegram("Order Limit Timeout: Exceeded 2 minutes")
             return False
 
         if order is None:
             self.log.error("Could not get order with ID: %s", orderId)
             self.log.info("Cancel all open orders for %s", symbol)
             self.client.futures_cancel_all_open_orders(symbol=symbol)
-            util.sendTelegram("Order Limit Timeout: Exceeded 5 minutes")
+            util.sendTelegram("Order Limit Timeout: Exceeded 2 minutes")
             return False
 
         if order["status"] == "PARTIALLY_FILLED":
