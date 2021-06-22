@@ -306,7 +306,7 @@ class OrderMgr:
         # if strategy == "highVol":
         #     quantity_multiplier = 1
         # else:
-        quantity_multiplier = 0.5    
+        quantity_multiplier = 0.65    
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
@@ -407,7 +407,7 @@ class OrderMgr:
         # if strategy == "highVol":
         #     quantity_multiplier = 1
         # else:
-        quantity_multiplier = 0.5
+        quantity_multiplier = 0.65
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
