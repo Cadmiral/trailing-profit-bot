@@ -329,7 +329,7 @@ class OrderMgr:
             take_profit_dict["take_profit_order%s" %number] = self.create_order(orderType=take_profit_orderType, symbol=symbol,
                 side=side, quantity=order_quantity, stopPrice=take_profit, 
                 positionAmt=positionAmt)
-            order_quantity = float(order_quantity) * 0.65
+            order_quantity = float(order_quantity) * 0.3
             take_profit = take_profit - atr * 0.5
             time.sleep(1)
             self.log.debug("Take profit%s order: %s", number, take_profit_dict["take_profit_order%s" %number])
@@ -430,7 +430,7 @@ class OrderMgr:
             take_profit_dict["take_profit_order%s" %number] = self.create_order(orderType=take_profit_orderType, symbol=symbol,
                 side=side, quantity=order_quantity, stopPrice=take_profit, 
                 positionAmt=positionAmt)
-            order_quantity = float(order_quantity) * 0.65
+            order_quantity = float(order_quantity) * 0.3
             take_profit = take_profit + atr * 0.5
             time.sleep(1)
             self.log.debug("Take profit%s order: %s", number, take_profit_dict["take_profit_order%s" %number])
