@@ -200,7 +200,7 @@ class OrderMgr:
 
         return orders
 
-    def send_order(self, data, timeout=120.0, interval=None):
+    def send_order(self, data, timeout=120.0):
         self.log.info("Send order: %s", pprint.pformat(data))
 
         orderType = data["type"]
@@ -211,8 +211,7 @@ class OrderMgr:
         stopLoss = float(data["stop_loss"])
         percentageVal = float(data["percentage"])
         strategy = data["strategy"]
-        if data["interval"]:
-            interval = data["interval"]
+        interval = data["interval"]
         precision_price = self.get_price_precision(symbol)
         precision_quantity = self.get_quantity_precision(symbol)
         # Adjust order quantity
