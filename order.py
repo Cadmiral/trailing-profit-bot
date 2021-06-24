@@ -211,7 +211,7 @@ class OrderMgr:
         stopLoss = float(data["stop_loss"])
         percentageVal = float(data["percentage"])
         strategy = data["strategy"]
-        if interval:
+        if data["interval"]:
             interval = data["interval"]
         precision_price = self.get_price_precision(symbol)
         precision_quantity = self.get_quantity_precision(symbol)
