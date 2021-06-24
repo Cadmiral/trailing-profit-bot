@@ -211,6 +211,7 @@ class OrderMgr:
         stopLoss = float(data["stop_loss"])
         percentageVal = float(data["percentage"])
         strategy = data["strategy"]
+        interval = data["interval"]
         precision_price = self.get_price_precision(symbol)
         precision_quantity = self.get_quantity_precision(symbol)
         # Adjust order quantity
@@ -241,8 +242,8 @@ class OrderMgr:
             return False
 
         # Send telegram
-        message = ("Create New Order for: {4}\nSide: {5}\nPercentage: {6}\nPrice: ${0:,.2f}\nQuantity: {3:.2f}\nTake Profit: ${1:,.2f}\nStop Loss: ${2:,.2f}\nOpening Balance: ${8:,.2f}\nMax Loss: ${7:,.2f}".format(
-                    price, takeProfit, stopLoss, quantity, symbol, side, percentage, maxStopLossAmt, balance))
+        message = ("Create New Order for: {9}\nStrategy: {10}\nInterval: {4}\nSide: {5}\nPercentage: {6}\nPrice: ${0:,.2f}\nQuantity: {3:.2f}\nTake Profit: ${1:,.2f}\nStop Loss: ${2:,.2f}\nOpening Balance: ${8:,.2f}\nMax Loss: ${7:,.2f}".format(
+                    price, takeProfit, stopLoss, quantity, symbol, side, percentage, maxStopLossAmt, balance, strategy, interval))
 
         util.sendTelegram(message)
 
@@ -303,15 +304,17 @@ class OrderMgr:
         stop_loss_orderType = "STOP_MARKET"
         side = "BUY"
         symbol = order["symbol"]
-        # if strategy == "highVol":
-        #     quantity_multiplier = 1
-        # else:
         quantity_multiplier = 0.65    
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
         atr = abs(price - take_profit)
         order_quantity = abs(order_quantity * quantity_multiplier)
+
+        # if strategy == "highVol":
+        #     quantity_multiplier = 1
+        #     order_quantity = 10
+        # else:
 
         openPosition = self.client.futures_position_information(symbol=symbol)
         for p in openPosition:
@@ -404,15 +407,17 @@ class OrderMgr:
         stop_loss_orderType = "STOP_MARKET"
         side = "SELL"
         symbol = order["symbol"]
-        # if strategy == "highVol":
-        #     quantity_multiplier = 1
-        # else:
         quantity_multiplier = 0.65
         stop_loss_muliplier = 0.5
         order_quantity = float(order["executedQty"])
         price = float(order["avgPrice"])
         atr = abs(price - take_profit)
         order_quantity = abs(order_quantity * quantity_multiplier)
+
+        # if strategy == "highVol":
+        #     quantity_multiplier = 1
+        #     order_quantity = 10
+        # else:
 
         openPosition = self.client.futures_position_information(symbol=symbol)
         for p in openPosition:
