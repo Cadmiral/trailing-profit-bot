@@ -222,6 +222,9 @@ class OrderMgr:
         maxStopLossAmt = float(balance * percentage)
         quantity = maxStopLossAmt / stopLossAmt
 
+        if strategy == "scalp":
+            order_quantity = 1
+
         self.log.debug("stopLossAmt=%.2f, maxStopLossAmt=%.2f, quantity=%s",
                        stopLossAmt, maxStopLossAmt, quantity)
 
@@ -311,13 +314,8 @@ class OrderMgr:
         atr = abs(price - take_profit)
         order_quantity = abs(order_quantity * quantity_multiplier)
 
-        if strategy == "scalp":
-            order_quantity = 1
-
-        # if strategy == "highVol":
-        #     quantity_multiplier = 1
-        #     order_quantity = 10
-        # else:
+        # if strategy == "scalp":
+        #     quantity_multiplier = 1 
 
         openPosition = self.client.futures_position_information(symbol=symbol)
         for p in openPosition:
@@ -417,13 +415,8 @@ class OrderMgr:
         atr = abs(price - take_profit)
         order_quantity = abs(order_quantity * quantity_multiplier)
 
-        if strategy == "scalp":
-            order_quantity = 1
-
-        # if strategy == "highVol":
-        #     quantity_multiplier = 1
-        #     order_quantity = 10
-        # else:
+        # if strategy == "scalp":
+        #     quantity_multiplier = 1 
 
         openPosition = self.client.futures_position_information(symbol=symbol)
         for p in openPosition:
