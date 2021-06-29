@@ -223,7 +223,7 @@ class OrderMgr:
         quantity = maxStopLossAmt / stopLossAmt
 
         if strategy == "scalp":
-            order_quantity = 1
+            quantity = 1
 
         self.log.debug("stopLossAmt=%.2f, maxStopLossAmt=%.2f, quantity=%s",
                        stopLossAmt, maxStopLossAmt, quantity)
