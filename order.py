@@ -311,6 +311,9 @@ class OrderMgr:
         atr = abs(price - take_profit)
         order_quantity = abs(order_quantity * quantity_multiplier)
 
+        if strategy == "scalp":
+            order_quantity = 1
+
         # if strategy == "highVol":
         #     quantity_multiplier = 1
         #     order_quantity = 10
@@ -413,6 +416,9 @@ class OrderMgr:
         price = float(order["avgPrice"])
         atr = abs(price - take_profit)
         order_quantity = abs(order_quantity * quantity_multiplier)
+
+        if strategy == "scalp":
+            order_quantity = 1
 
         # if strategy == "highVol":
         #     quantity_multiplier = 1

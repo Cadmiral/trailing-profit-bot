@@ -51,7 +51,6 @@ def webhook():
                     mgr.write_config()
                 else:
                     log.warning("No state for symbol: %s", symbol)
-
                 return "", 200
             elif strategy == "trend":
                 isRunning = mgr.config.getboolean(symbol, "isrunning")
@@ -64,6 +63,17 @@ def webhook():
                 mgr.config.set(symbol, "isrunning", "no")
                 mgr.write_config()
                 return "", 200
+            elif strategy == "scalp":
+                isRunning = mgr.config.getboolean(symbol, "isrunning")
+                if isRunning:
+                    log.warning("%s trade is running, no trade", symbol)
+                    return "", 200
+                mgr.config.set(symbol, "isrunning", "yes")
+                mgr.write_config()
+                mgr.send_order(data)
+                mgr.config.set(symbol, "isrunning", "no")
+                mgr.write_config()
+                return "", 200    
             elif strategy == "highVol":
                 isRunning = mgr.config.getboolean(symbol, "isrunning")
                 if isRunning:
