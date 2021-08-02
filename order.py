@@ -342,6 +342,7 @@ class OrderMgr:
         stop_loss_order_status = "NEW"
         while stop_loss_order_status != "FILLED" and iteration < 6:
 
+            self.client = Client(api_key, api_secret)
             self.log.debug("TP{0} and SL{0} positions are still open".format(iteration))
             
             stop_loss_order = self.client.futures_get_order(symbol=symbol, orderId=stop_loss_order['orderId'])            
@@ -443,6 +444,7 @@ class OrderMgr:
         stop_loss_order_status = "NEW"
         while stop_loss_order_status != "FILLED" and iteration < 6:
 
+            self.client = Client(api_key, api_secret)
             self.log.debug("TP{0} and SL{0} positions are still open".format(iteration))
             
             stop_loss_order = self.client.futures_get_order(symbol=symbol, orderId=stop_loss_order['orderId'])            
