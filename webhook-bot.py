@@ -59,7 +59,7 @@ def webhook():
                     return "", 200
                 mgr.config.set(symbol, "isrunning", "yes")
                 mgr.write_config()
-                mgr.send_order(data)
+                mgr.send_order(data, api_key, api_secret)
                 mgr.config.set(symbol, "isrunning", "no")
                 mgr.write_config()
                 return "", 200
@@ -70,7 +70,7 @@ def webhook():
                     return "", 200
                 mgr.config.set(symbol, "isrunning", "yes")
                 mgr.write_config()
-                mgr.send_order(data)
+                mgr.send_order(data, api_key, api_secret)
                 mgr.config.set(symbol, "isrunning", "no")
                 mgr.write_config()
                 return "", 200    
@@ -81,7 +81,7 @@ def webhook():
                     return "", 200
                 mgr.config.set(symbol, "isrunning", "yes")
                 mgr.write_config()
-                mgr.send_order(data)
+                mgr.send_order(data, api_key, api_secret)
                 mgr.config.set(symbol, "isrunning", "no")
                 mgr.write_config()
                 return "", 200    

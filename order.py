@@ -200,7 +200,7 @@ class OrderMgr:
 
         return orders
 
-    def send_order(self, data, timeout=120.0):
+    def send_order(self, data, api_key, api_secret, timeout=120.0):
         self.log.info("Send order: %s", pprint.pformat(data))
 
         orderType = data["type"]
@@ -279,9 +279,9 @@ class OrderMgr:
             self.client.futures_cancel_all_open_orders(symbol=symbol)
 
         if side == "BUY":
-            self.send_long_orders(order, takeProfit, stopLoss, balance, strategy)
+            self.send_long_orders(order, takeProfit, stopLoss, balance, strategy, api_key, api_secret)
         else:
-            self.send_short_orders(order, takeProfit, stopLoss, balance, strategy)
+            self.send_short_orders(order, takeProfit, stopLoss, balance, strategy, api_key, api_secret)
 
         return True
 
@@ -297,7 +297,7 @@ class OrderMgr:
 
         return stop_loss_order
 
-    def send_short_orders(self, order, take_profit, stop_loss, open_balance, strategy):
+    def send_short_orders(self, order, take_profit, stop_loss, open_balance, strategy, api_key, api_secret):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
@@ -399,7 +399,7 @@ class OrderMgr:
                     self.client.futures_create_order(symbol=symbol, side=side, 
                     type='MARKET', quantity=positionAmt, reduceOnly='true')
 
-    def send_long_orders(self, order, take_profit, stop_loss, open_balance, strategy):
+    def send_long_orders(self, order, take_profit, stop_loss, open_balance, strategy, api_key, api_secret):
         self.log.info("Set TP and SL short order: take_profit=%s, stop_loss=%s",
                        take_profit, stop_loss)
         self.log.debug(pprint.pformat(order))
